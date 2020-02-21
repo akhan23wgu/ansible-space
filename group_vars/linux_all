@@ -1,0 +1,12 @@
+# linux_all.yml
+---
+
+user_list:
+  - name: ansible
+    password: vault_ansible
+    group: ansible
+    groups: admin
+    state: present
+    uid: 1000
+
+...

@@ -1,0 +1,10 @@
+--- # ubuntu_containers.yml
+
+user_list:
+  - name: khan
+    password: vault_common
+    groups: media
+    state: present
+    uid: 1100
+
+...

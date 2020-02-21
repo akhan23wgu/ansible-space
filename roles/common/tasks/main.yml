@@ -1,0 +1,37 @@
+--- # roles/common/tasks/main.yml - Add users based on user_list
+
+- name: Add groups
+  group:
+    name: "{{ item.name | mandatory }}"
+    gid: "{{ item.gid | mandatory}}"
+  when:
+    item.state == "present"
+  with_items:
+    "{{ group_list }}"
+- name: Add users
+  user:
+    uid: "{{ item.uid | mandatory}}"
+    name: "{{ item.name | mandatory }}"
+    home: "{{ item.home | default('/home/' + item.name) }}"
+    groups: "{{ item.groups | default('') }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    password: "{{ item.password | default('vault_common') | password_hash('sha512') }}"
+    state: "{{ item.present | default('present') }}"
+    skeleton: "{{ item.home | default('/home/' + item.name) }}"
+    create_home: true 
+    append: true
+  when:
+    item.state == "present"
+  with_items:
+    "{{ user_list }}"
+  register: debug_users
+- debug:
+    msg: "{{ debug_users }}"
+- name: Allow specified groups to sudo
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/sudoers
+    validate: 'visudo -cf %s'
+    mode: 0440
+
+...

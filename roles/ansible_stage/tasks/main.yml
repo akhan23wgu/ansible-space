@@ -1,0 +1,48 @@
+--- # stage ansible user
+
+- name: install python3 if >RHEL8
+  package:
+    name:
+      - python3
+    state: present
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '8'
+- name: install python
+  package:
+    name:
+      - python
+      - sudo
+    state: present
+  ignore_errors: yes
+- name: Add a new user named ansible
+  user:
+    name: ansible
+    group: ansible
+    groups: admin
+    state: present
+    shell: /bin/bash
+    uid: 1000
+    password: "{{ vault_ansible | password_hash('sha512') }}"
+- name: Add ansible user to the sudoers
+  copy:
+    dest: "/etc/sudoers.d/ansible"
+    content: "ansible ALL=(ALL)  NOPASSWD: ALL"
+- name: Deploy SSH Keys
+  authorized_key:
+    user: ansible
+    key: "{{ lookup('file', '/home/akhan/src/ansible-linux/roles/ansible_stage/files/authorized_keys') }}"
+    state: present
+- name: Disable Password Authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: "PasswordAuthentication no"
+    state: present
+    backup: yes
+- name: Disable Root Login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: "PermitRootLogin no"
+    state: present
+    backup: yes
+  notify: ssh restart

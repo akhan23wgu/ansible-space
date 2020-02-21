@@ -1,0 +1,28 @@
+---
+
+- name: Add share to Windows 10 Host
+  hosts: windows10
+  gather_facts: false
+  vars_files:
+    ~/src/ansible-linux/vault 
+  vars:
+    ansible_connection: winrm
+    ansible_user: ansible
+    ansible_password: "{{ vault_ansible }}"
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+  - name: Create temp directory, if it doesn't exist
+    win_file:
+      path: C:\temp
+      state: directory
+  - name: Create temp share
+    win_share:
+      name: temp
+      description: Temporary share for Windows
+      path: C:\temp
+      list: yes
+      full: Everyone
+      read: Everyone
+      change: Everyone
+
+...

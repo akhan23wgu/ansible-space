@@ -1,0 +1,41 @@
+---
+
+- hosts: windows_all 
+  roles:
+    - role: chocolatey
+  vars_files:
+    ~/src/ansible-linux/vault
+  vars:
+    ansible_connection: winrm
+    ansible_user: ansible
+    ansible_password: "{{ vault_ansible }}"
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+  - name: Set the cache location
+    win_chocolatey_config:
+      name: cacheLocation
+      state: present
+      value: C:\temp
+  - name: Stop Chocolatey on the first package failure
+    win_chocolatey_feature:
+      name: stopOnFirstPackageFailure
+      state: enabled
+  - name: Install extra software
+    win_chocolatey:
+      name: '{{ item }}'
+      state: present
+      execution_timeout: 0
+    with_items:
+    - 7zip
+    - chocolateygui
+    - firefox
+    - googlechrome
+    - notepadplusplus
+    - sysinternals
+    - windirstat
+    - ublockorigin-firefox
+    - putty
+    - winscp
+    - pstools
+    tags: software
+    ignore_errors: yes

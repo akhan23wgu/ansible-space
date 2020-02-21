@@ -1,0 +1,57 @@
+# production inventory
+
+### LINUX
+
+[centos_containers]
+boipct01-ansible
+boipct03-pihole
+boipct04-dev
+
+[ubuntu_containers]
+boipct02-docker
+
+[centos_vms]
+boipl03-ansible ansible_host=localhost
+
+[arm_appliance]
+octopi
+
+[proxmox_hosts]
+stillwaiting1 # 10.10.0.11
+stillwaiting2 # 10.10.0.12
+
+### UNIX
+
+[macos_laptop]
+Abids-MBP
+
+### WINDOWS
+
+[server2016]
+boipwh01
+
+[windows10]
+boipwh02
+boipwh03
+
+### GROUPS
+
+[linux_all:children]
+arm_appliance
+centos_containers
+centos_vms
+ubuntu_containers
+proxmox_hosts
+
+[macos_all:children]
+macos_laptop
+
+[windows_server:children]
+server2016
+
+[windows_workstation:children]
+windows10
+
+[windows_all:children]
+windows_server
+windows_workstation

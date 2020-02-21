@@ -1,0 +1,38 @@
+--- # initialize proxmox hosts for automation
+- hosts: proxmox_hosts 
+  vars_files:
+    ~/src/ansible-linux/vault
+  tasks:
+  - name: Upgrade all packages to the latest version
+    apt:
+      name: "*"
+      state: latest
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+  - name: Install required packages
+    apt:
+      pkg:
+      - build-essential
+      - python-apt
+      - python-pip
+      - python-dev
+      state: present
+  - name: Install required pip packages
+    pip:
+      name:
+        - pip
+        - proxmoxer
+        - request
+      state: present
+- hosts: linux_all
+  vars_files:
+    ~/src/ansible-linux/vault
+  tasks:
+  - name: Install QEMU Agent on Linux hosts
+    package:
+      name: qemu-guest-agent
+      state: present

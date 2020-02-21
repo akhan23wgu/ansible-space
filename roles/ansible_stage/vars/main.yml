@@ -1,0 +1,5 @@
+---
+# vars file for ansible_stage
+ansible_password: "{{ vault_rootpasswd }}"
+ansible_become_user: root
+ansible_become_password: "{{ vault_rootpasswd }}"

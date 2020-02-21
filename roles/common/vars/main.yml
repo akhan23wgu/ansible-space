@@ -1,0 +1,17 @@
+--- # roles/common/vars/main.yml 
+
+sudo_configure:
+  - name: admin
+    sudo: true
+  - name: media
+    sudo: false
+
+group_list:
+  - name: admin
+    gid: 10000
+    state: present
+  - name: media
+    gid: 11000
+    state: present
+
+...
