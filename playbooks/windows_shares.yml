@@ -7,8 +7,8 @@
     ~/src/ansible-linux/vault 
   vars:
     ansible_connection: winrm
-    ansible_user: ansible
-    ansible_password: "{{ vault_ansible }}"
+    ansible_user: Administrator
+    ansible_password: "{{ vault_rootpasswd }}"
     ansible_winrm_server_cert_validation: ignore
   tasks:
   - name: Create temp directory, if it doesn't exist

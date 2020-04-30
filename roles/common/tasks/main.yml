@@ -3,14 +3,15 @@
 - name: Add groups
   group:
     name: "{{ item.name | mandatory }}"
-    gid: "{{ item.gid | mandatory}}"
+    gid: "{{ item.gid | mandatory }}"
+    state: "{{ item.state | default('present') | mandatory }}"
   when:
     item.state == "present"
-  with_items:
-    "{{ group_list }}"
+  loop: "{{ group_list|flatten(levels=1) }}"
+  tags: user_mgmt
 - name: Add users
   user:
-    uid: "{{ item.uid | mandatory}}"
+    uid: "{{ item.uid | mandatory }}"
     name: "{{ item.name | mandatory }}"
     home: "{{ item.home | default('/home/' + item.name) }}"
     groups: "{{ item.groups | default('') }}"
@@ -18,13 +19,13 @@
     password: "{{ item.password | default('vault_common') | password_hash('sha512') }}"
     state: "{{ item.present | default('present') }}"
     skeleton: "{{ item.home | default('/home/' + item.name) }}"
-    create_home: true 
+    create_home: true
     append: true
   when:
     item.state == "present"
-  with_items:
-    "{{ user_list }}"
+  loop: "{{ user_list|flatten(levels=1) }}"
   register: debug_users
+  tags: user_mgmt
 - debug:
     msg: "{{ debug_users }}"
 - name: Allow specified groups to sudo
@@ -33,5 +34,62 @@
     dest: /etc/sudoers.d/sudoers
     validate: 'visudo -cf %s'
     mode: 0440
-
+- name: install packages
+  package:
+    name:
+      - sudo
+      - qemu-guest-agent
+      - net-tools
+      - nmap
+    state: present
+- name: Deploy user ssh keys
+  authorized_key:
+    user: ansible
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - /home/akhan/src/ansible-linux/roles/common/files/akhan_boipl03.pub
+    - /home/akhan/src/ansible-linux/roles/common/files/termius.pub
+- name: Set timezone to America/Boise 
+  timezone:
+    name: America/Boise
+  tags: timezone
+- name: restart cron
+  service:
+    name: cron
+    state: restarted
+  ignore_errors: yes
+  tags: timezone
+- name: restart service cron on centos, in all cases, also issue daemon-reload to pick up config changes
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: crond
+  ignore_errors: yes
+- name: install syslog-ng
+  package:
+    name: syslog-ng
+  tags: syslog
+  when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+- name: copy graylog syslog-ng configuration to client
+  copy:
+    src: /home/akhan/src/ansible-linux/roles/common/files/graylog.conf
+    dest: /etc/syslog-ng/conf.d/
+    owner: root
+    group: root
+    mode: '0644'
+  tags: syslog
+  when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+- name: restart syslog-ng
+  service:
+    name: syslog-ng
+    state: restarted
+  tags: syslog
+  when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+- name: install rsyslog
+  package:
+    name: rsyslog 
+  tags: syslog
+  when: ansible_os_family == 'CentOS' or ansible_os_family == 'RedHat'
+ 
 ...

@@ -1,8 +1,0 @@
-# add users
----
-- hosts: linux_all
-  gather_facts: yes
-  vars_files:
-    ~/src/ansible-linux/vault
-  roles:
-     - common

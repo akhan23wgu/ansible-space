@@ -1,6 +1,5 @@
 ---
 # tasks file for windows_stage
-- include_vars: ~/src/ansible-linux/vault
 - name: Disable Firewall
   win_firewall:
     state: disabled
@@ -28,4 +27,4 @@
     state: present
     groups:
       - Users
-  no_log: true 
+  no_log: true

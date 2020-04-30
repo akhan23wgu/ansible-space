@@ -13,11 +13,14 @@
       - sudo
     state: present
   ignore_errors: yes
+- name: Add group "admin"
+  group:
+    name: admin
+    gid: 10000
+    state: present
 - name: Add a new user named ansible
   user:
     name: ansible
-    group: ansible
-    groups: admin
     state: present
     shell: /bin/bash
     uid: 1000
@@ -31,6 +34,7 @@
     user: ansible
     key: "{{ lookup('file', '/home/akhan/src/ansible-linux/roles/ansible_stage/files/authorized_keys') }}"
     state: present
+  ignore_errors: yes
 - name: Disable Password Authentication
   lineinfile:
     path: /etc/ssh/sshd_config

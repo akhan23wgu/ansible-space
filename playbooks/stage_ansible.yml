@@ -1,6 +1,6 @@
 # stage ansible playbook
 ---
-- hosts: linux_all
+- hosts: all 
   gather_facts: yes
   vars_files:
     ~/src/ansible-linux/vault

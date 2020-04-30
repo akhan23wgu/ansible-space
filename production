@@ -9,16 +9,20 @@ boipct04-dev
 
 [ubuntu_containers]
 boipct02-docker
+boipct05-jenkins-slave
 
 [centos_vms]
-boipl03-ansible ansible_host=localhost
+boipl03-ansible ansible_connection=local 
+boipl01-graylog
 
 [arm_appliance]
 octopi
 
 [proxmox_hosts]
-stillwaiting1 # 10.10.0.11
-stillwaiting2 # 10.10.0.12
+stillwaiting ansible_host=10.10.0.11 # 10.10.0.11
+
+[goldimage]
+boipl ansible_host=10.10.0.252
 
 ### UNIX
 

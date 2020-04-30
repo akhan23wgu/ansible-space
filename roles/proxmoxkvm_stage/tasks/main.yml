@@ -1,14 +1,23 @@
 --- # tasks file for proxmoxkvm_stage
 
-- name: Proxmox VM Automation 
+- name: Proxmox VM Automation
   proxmox_kvm:
     api_user    : "{{ item.api_user | default('root@pam') }}"
-    api_password: "{{ item.password | default('vault_rootpasswd') }}"
+    api_password: "{{ vault_rootpasswd }}"
     api_host    : "{{ item.api_host | default('10.10.0.11') }}"
     name        : "{{ item.name | default('') }}"
     node        : "{{ item.node | default('stillwaiting') }}"
+    clone       : boipl-goldimage
+    vmid        : 109
+    target      : stillwaiting
     cores       : "{{ item.cores | default('1') }}"
     vcpus       : "{{ item.vcpus | default('2') }}"
+    memory      : "{{ item.memory | default('4') }}"
+    storage     : sas_data 
+    format      : raw 
+    onboot      : "{{ item.onboot | default('no') }}"
+    net         : '{"net0":"virtio,bridge=vmbr0,firewall=1"}'
+    timeout     : 500  # Note: The task can take a while.
   with_items:
     "{{ proxmox_vms }}"
   register: debug_vm

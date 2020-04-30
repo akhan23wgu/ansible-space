@@ -1,8 +1,8 @@
 # stage windows playbook
 ---
-- hosts: windows_all 
+- hosts: windows_all
   gather_facts: yes
   vars_files:
     ~/src/ansible-linux/vault
   roles:
-     - windows_stage
+    - windows_stage

@@ -9,4 +9,9 @@ user_list:
     state: present
     uid: 1000
 
+group_list:
+  - name: admin
+    gid: 10000 
+    state: present
+
 ...
