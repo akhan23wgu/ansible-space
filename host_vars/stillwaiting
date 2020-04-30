@@ -1,0 +1,14 @@
+--- # stillwaiting.yml
+
+proxmox_vms:
+  - name: boipl01-graylog
+    vcpus: 2
+    cores: 2
+    memory: 4096
+    onboot: yes
+    state: started
+    description: CentOS 8 - Graylog for centralized logging
+
+apt_packages:
+
+...

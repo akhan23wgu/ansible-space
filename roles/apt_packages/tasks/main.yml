@@ -1,0 +1,36 @@
+--- # tasks file for apt packages
+
+- name: Add an apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: "{{ item.source | mandatory }}"
+    state: present
+  loop: "{{ apt_key|flatten(levels=1) }}"
+
+- name: Add apt repository
+  apt_repository:
+    repo: "{{ item.source | mandatory }}"
+    state: present 
+  loop: "{{ repo_list|flatten(levels=1) }}"
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*" 
+    state: latest
+  when: update_pkg
+
+- name: Update all packages to the latest version
+  apt:
+    upgrade: dist
+  when: update_dist
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  apt:
+    update_cache: yes
+  when: update_cache
+
+- name: install packages 
+  apt:
+    pkg: 
+    - "{{ item | mandatory }}"
+    state: present
+  loop: "{{ packages|flatten(levels=1) }}"

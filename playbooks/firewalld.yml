@@ -1,0 +1,9 @@
+# firewalld.yml
+---
+
+- hosts: linux_all
+  gather_facts: true 
+  vars_files:
+    ~/src/ansible-linux/vault
+  roles:
+     - firewalld

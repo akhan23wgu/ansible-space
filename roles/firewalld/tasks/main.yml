@@ -1,0 +1,22 @@
+--- # tasks file for firewalld
+
+- name: Add firewall rules
+  firewalld:
+    port: "{{ item.port }}"
+    state: "{{ item.state | default('enabled') | mandatory }}"
+    zone: "{{ item.zone | default('public') | mandatory }}"
+    permanent: yes
+    immediate: yes
+  with_items:
+    "{{ firewall }}"
+  notify: restart firewall
+
+- name: Add port forward rule
+  firewalld:
+    zone: "{{ item.zone | default('public') | mandatory }}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+    rich_rule: rule family={{ item.family | default('ipv4') }} forward-port port={{ item.original_port }} protocol={{ item.protocol }} to-port={{ item.translated_port }}
+  with_items: "{{ firewall_port_forward }}"
+  notify: restart firewall

@@ -1,0 +1,9 @@
+# ssh_keys.yml
+---
+
+- hosts: linux_all
+  gather_facts: true
+  vars_files:
+    ~/src/ansible-linux/vault
+  roles:
+     - ssh_keys

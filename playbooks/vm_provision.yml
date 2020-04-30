@@ -1,0 +1,8 @@
+# vm_provision.yml
+---
+- hosts: stillwaiting
+  gather_facts: yes
+  vars_files:
+    ~/src/ansible-linux/vault
+  roles:
+     - proxmoxkvm_stage 

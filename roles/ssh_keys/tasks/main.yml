@@ -1,0 +1,10 @@
+--- # tasks file for ssh_key
+
+- name: Deploy new ssh key for specified user
+  authorized_key:
+    user: '{{ item.user }}'
+    key: "{{ lookup('file', item.file) }}"
+    state: '{{ item.state | mandatory }}'
+  when:
+    item.state == "present"
+  loop: "{{ ssh_key|flatten(levels=1) }}"

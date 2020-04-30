@@ -1,0 +1,13 @@
+---
+
+group_list:
+  - name: media
+    gid: "1100"
+    state: present
+
+user_list:
+  - name: akhan
+    password: vault_common
+    groups: media
+    state: present
+    uid: 1100

@@ -1,0 +1,33 @@
+#!groovy
+pipeline {
+   agent { label 'ansible-lint-geerling' 
+   }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Changing directory to playbooks...'
+                dir('/root/src/ansible-linux/playbooks'){
+                  sh "pwd"
+                }
+                echo 'Running syntax checks against playbooks...'
+                sh "find . -maxdepth 1 -name '*.yml' | xargs ansible-lint"
+                echo 'Changing directory to roles...'
+                dir('/root/src/ansible-linux/roles'){
+                  sh "pwd"
+                }
+                echo 'Running syntax checks against roles...'
+                sh "find . -type f -name '*.yml' ! -path './arillso.repositories/*' ! -path './elastic.elasticsearch/*' ! -path './Graylog2.graylog-ansible-role/*' ! -path './sbaerlocher.qemu-guest-agent/*' ! -path './jdauphant.nginx/*' | xargs ansible-lint" 
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+} 

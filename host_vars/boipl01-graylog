@@ -1,0 +1,51 @@
+--- # graylog server
+
+user_list:
+  - name: akhan
+    password: vault_common
+    groups: media
+    state: present
+    uid: 1100
+  - name: graylog
+    password: vault_graylog
+    groups: graylog
+    state: present
+    uid: 1200
+
+group_list:
+  - name: graylog
+    gid: 12000
+    state: present
+
+firewall:
+  - port: 25/tcp 
+    zone: public
+    state: enabled
+  - port: 162/udp
+    zone: public
+    state: enabled 
+  - port: 514/tcp
+    zone: public
+    state: enabled
+  - port: 9000/tcp
+    zone: public
+    state: enabled 
+  - port: 9513/tcp
+    zone: public
+    state: enabled
+
+firewall_port_forward: 
+  - original_port: 514
+    translated_port: 9514
+    family: ipv4
+    protocol: tcp
+    zone: public
+    state: enabled
+  - original_port: 162
+    translated_port: 1620
+    family: ipv4
+    protocol: udp 
+    zone: public
+    state: enabled
+
+...

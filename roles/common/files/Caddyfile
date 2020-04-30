@@ -1,0 +1,88 @@
+#0.0.0.0:80
+#root /var/www
+
+jenkins.eeeooo.xyz {
+    gzip
+    proxy / http://10.10.0.56:8080 {
+      transparent
+      websocket
+      }
+    tls abidkhan1@gmail.com
+}
+
+cloud.eeeooo.xyz {
+    gzip
+    proxy / https://10.10.0.39:443 {
+      transparent
+      insecure_skip_verify
+      }
+    tls abidkhan1@gmail.com
+}
+
+stream.eeeooo.xyz {
+    gzip
+    proxy / 10.10.0.37:32400 {
+        transparent
+        websocket
+    }
+    tls abidkhan1@gmail.com
+}
+
+http://movies.eeeooo.xyz {
+           redir 301 {
+       / https://{host}{uri}
+     }
+}
+
+movies.eeeooo.xyz {
+    gzip
+    proxy / 10.10.0.35:7878
+    tls abidkhan1@gmail.com
+}
+
+downloads.eeeooo.xyz {
+    gzip
+    proxy / 10.10.0.32:6789
+    tls abidkhan1@gmail.com
+}
+
+tv.eeeooo.xyz {
+    gzip
+    proxy / 10.10.0.34:8989
+    tls abidkhan1@gmail.com
+}
+
+chat.eeeooo.xyz {
+    gzip
+    proxy / 10.10.0.42:9000
+    tls abidkhan1@gmail.com
+}
+
+portal.eeeooo.xyz {
+    gzip
+    proxy / http://10.10.0.31 {
+      transparent
+    }
+    tls abidkhan1@gmail.com
+}
+
+request.eeeooo.xyz {
+    gzip
+    proxy / http://10.10.0.46:3579 {
+      transparent
+    }
+    tls abidkhan1@gmail.com
+}
+
+requests.eeeooo.xyz {
+    redir https://request.eeeooo.xyz{uri}
+}
+
+stats.eeeooo.xyz {
+    gzip
+    proxy / http://10.10.0.43:8181 {
+      transparent
+      insecure_skip_verify
+    }
+    tls abidkhan1@gmail.com
+}

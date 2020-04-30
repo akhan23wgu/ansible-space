@@ -1,0 +1,48 @@
+- hosts: boipl01-graylog
+  become: True
+  roles:
+    - role: "Graylog2.graylog-ansible-role"
+      tags:
+        - "graylog"
+  vars:
+    es_instance_name: "graylog"
+    es_scripts: False
+    es_templates: False
+    es_version_lock: False
+    es_heap_size: "1g"
+    es_config:
+      node.name: "graylog"
+      cluster.name: "graylog"
+      http.port: 9200
+      transport.tcp.port: 9300
+      network.host: "10.10.0.84"
+      node.data: True
+      node.master: True
+    graylog_install_java: False # Elasticsearch role already installed Java
+    graylog_password_secret: "{{ vault_akhan }}" 
+    graylog_root_password_sha2: "{{ vault_rootpasswd }}"
+    graylog_http_bind_address: "{{ ansible_default_ipv4.address }}:9000"
+    graylog_http_publish_uri: "http://{{ ansible_default_ipv4.address }}:9000/"
+    graylog_http_external_uri: "http://{{ ansible_default_ipv4.address }}:9000/"
+    es_xpack_features: []
+
+    nginx_sites:
+      graylog:
+        - "listen 80"
+        - "server_name boipl01-graylog"
+        - |
+          location / {
+            proxy_pass http://localhost:9000/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass_request_headers on;
+            proxy_connect_timeout 150;
+            proxy_send_timeout 100;
+            proxy_read_timeout 100;
+            proxy_buffers 4 32k;
+            client_max_body_size 8m;
+            client_body_buffer_size 128k;
+          }
+  vars_files:
+    ~/src/ansible-linux/vault

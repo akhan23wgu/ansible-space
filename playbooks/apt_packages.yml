@@ -1,0 +1,9 @@
+# packages.yml 
+---
+
+- hosts: linux_all
+  gather_facts: true 
+  vars_files:
+    ~/src/ansible-linux/vault
+  roles:
+     - apt_packages

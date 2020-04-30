@@ -1,0 +1,42 @@
+--- # update linux servers
+
+- hosts: ubuntu_containers:proxmox_hosts
+  vars_files:
+    ~/src/ansible-linux/vault
+  tasks:
+  - name: Upgrade all packages to the latest version
+    apt:
+      name: "*"
+      state: latest
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+
+- hosts: centos_containers 
+  vars_files:
+    ~/src/ansible-linux/vault
+  tasks:
+  - name: Upgrade all packages to the latest version
+    yum:
+      name: "*"
+      state: latest
+  - name: Run the equivalent of "yum update" as a separate step
+    yum:
+      update_cache: yes
+
+- hosts: localhost 
+  vars_files:
+    ~/src/ansible-linux/vault
+  tasks:
+  - name: Upgrade all packages to the latest version
+    dnf:
+      name: "*"
+      state: latest
+  - name: Run the equivalent of "dnf update" as a separate step
+    dnf:
+      update_cache: yes
+
+...

@@ -1,0 +1,27 @@
+# site.yml 
+---
+
+- hosts: linux_all
+  gather_facts: true 
+  vars_files:
+    ~/src/ansible-linux/vault
+  roles:
+     - common
+- hosts: boipct03-pihole
+  tasks:
+    - name: write dns file lan.list to pihole
+      copy:
+        src: /home/akhan/src/ansible-linux/roles/common/files/lan.list
+        dest: /etc/pihole/lan.list
+        owner: root
+        group: root
+        mode: '644'
+        backup: yes
+      tags: dns
+    - name: restart dns resovler
+      become: yes
+      command:
+        cmd: pihole restartdns
+      tags: dns
+
+...
